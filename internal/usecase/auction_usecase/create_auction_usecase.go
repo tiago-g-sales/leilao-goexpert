@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/tiago-g-sales/leilao-goexpert/internal/entity/auction_entity"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/entity/bid_entity"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/model"
 )
@@ -11,6 +12,7 @@ import (
 type AuctionUseCase struct {
 
 	auctionRepositoryInterface   auction_entity.AuctionRepositoryInterface
+	bidRepositoryInterface       bid_entity.BidRepositoryInterface
 
 }
 

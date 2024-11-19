@@ -6,6 +6,12 @@ import (
 	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
 )
 
+type WinningInfoOutputDTO struct {
+	Auction 		AuctionOutputDTO `json:"auction"`
+	Bid				*BidOutputDTO 	 `json:"bid, omitempty"`  
+}
+
+
 type AuctionInputDTO struct {
 	Id 	 			string 				
 	ProductName 	string				

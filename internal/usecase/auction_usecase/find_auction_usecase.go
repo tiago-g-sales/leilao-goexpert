@@ -38,3 +38,28 @@ func (au *AuctionUseCase) FindAuctions(
 
 	return auctionOutputDTOs, nil
 }
+
+
+func (au *AuctionUseCase) FindWinningBidByAuctionId(ctx context.Context, auctionId string)(*model.WinningInfoOutputDTO, *internal_error.InternalError){
+
+	auction, err := au.auctionRepositoryInterface.FindAuctionById(ctx, auctionId)
+	if err != nil {
+		return nil, err
+	}
+
+	bidWinning, err := au.bidRepositoryInterface.FindWinningBidByAuctionId(ctx, auction.Id)
+	if err != nil {
+		return &model.WinningInfoOutputDTO{
+			Auction: *auction,
+			Bid: nil,
+		}, nil
+	} else {
+		return &model.WinningInfoOutputDTO{
+			Auction: *auction,
+			Bid: bidWinning,
+		}, nil
+		}
+	}
+
+
+
