@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-func (ar *AuctionRepository) FindAuctionById(ctx context.Context,  auctionId string) (*model.Auction, *internal_error.InternalError){
+func (ar *AuctionRepository) FindAuctionById(ctx context.Context,  auctionId string) (*model.AuctionOutputDTO, *internal_error.InternalError){
 	filter := bson.M{"_id": auctionId} 
 	var auctionEntityMongo auction_entity.AuctionEntityMongo
 	
@@ -23,7 +23,7 @@ func (ar *AuctionRepository) FindAuctionById(ctx context.Context,  auctionId str
 		return nil, internal_error.NewInternalServerError("Error trying to find auction by auctionID")
 	}
 	
-	return &model.Auction{
+	return &model.AuctionOutputDTO{
 		Id: auctionEntityMongo.Id,
 		ProductName: auctionEntityMongo.ProductName,
 		Category: auctionEntityMongo.Category,
@@ -35,10 +35,10 @@ func (ar *AuctionRepository) FindAuctionById(ctx context.Context,  auctionId str
 	
 }
 
-func (ar *AuctionRepository) FindAuction(
+func (ar *AuctionRepository) FindAuctions(
 	ctx context.Context, 
 	status model.AuctionStatus, 
-	category, productName string ) ([]model.Auction, *internal_error.InternalError){
+	category, productName string ) ([]model.AuctionOutputDTO, *internal_error.InternalError){
 	
 		filter := bson.M{} 
 		if status != 0{
@@ -69,9 +69,9 @@ func (ar *AuctionRepository) FindAuction(
 			return nil, internal_error.NewInternalServerError("Error trying to find auctions")
 		}
 
-		var auctionsDTO []model.Auction
+		var auctionsDTO []model.AuctionOutputDTO
 		for _, auction := range auctions {
-			auctionsDTO = append(auctionsDTO, model.Auction{
+			auctionsDTO = append(auctionsDTO, model.AuctionOutputDTO{
 				Id: auction.Id,
 				ProductName: auction.ProductName,
 				Category: auction.Category,

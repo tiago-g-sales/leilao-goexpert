@@ -1,5 +1,12 @@
 package bid_entity
 
+import (
+	"context"
+
+	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/model"
+)
+
 
 type BidEntityMongo struct {
 	Id 			string 		`bson:"_id"`
@@ -10,3 +17,10 @@ type BidEntityMongo struct {
 }
 
 
+
+type BidRepositoryInterface interface {
+	CreateBid( ctx context.Context, bidList []model.BidInputDTO)(*internal_error.InternalError) 
+	FindBidByAuctionId(ctx context.Context, auctionId string)([]model.BidOutputDTO, *internal_error.InternalError)
+	FindWinningBidByAuctionId(ctx context.Context, auctionId string)(*model.BidOutputDTO, *internal_error.InternalError)
+
+} 

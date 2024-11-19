@@ -1,8 +1,12 @@
 package model
 
-import "time"
+import (
+	"time"
 
-type Auction struct {
+	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
+)
+
+type AuctionInputDTO struct {
 	Id 	 			string 				
 	ProductName 	string				
 	Category 		string				
@@ -10,6 +14,18 @@ type Auction struct {
 	Condition 		ProductCondition	
 	Status 			AuctionStatus		
 	Timestamp 		time.Time		
+
+}
+
+
+type AuctionOutputDTO struct {
+	Id 	 			string 				`json:"id"`		
+	ProductName 	string				`json:"productName"`	
+	Category 		string				`json:"category"`
+	Description 	string				`json:"description"`
+	Condition 		ProductCondition	`json:"condition"`
+	Status 			AuctionStatus		`json:"status"`
+	Timestamp 		time.Time			`json:"timestamp" time_format:"2006-01-02T15:04:05Z07:00"`
 
 }
 
@@ -26,3 +42,33 @@ const (
 	Used
 	Refurbished
 )
+
+func CreateAuctionInputDTO(productName, category, description string, condition ProductCondition) (*AuctionInputDTO, *internal_error.InternalError) {
+	auction :=  &AuctionInputDTO{
+		ProductName: productName,
+		Category: category,
+		Description: description,
+		Condition: condition,
+		Status: Active,
+		Timestamp: time.Now(),
+	}
+
+	if err := auction.Validate(); err != nil {
+		return nil, err
+	}
+	return auction, nil
+}
+
+func (au *AuctionInputDTO) Validate() *internal_error.InternalError {
+	
+	if  len(au.ProductName) <= 1 || 
+		len(au.Category) <= 2 || 
+		len(au.Description) < 10 &&
+		   (au.Condition != New && 
+			au.Condition != Used &&	
+			au.Condition != Refurbished){ 
+		return internal_error.NewBadRequestError("Invalid Auction object" )
+	}
+	
+	return nil
+}

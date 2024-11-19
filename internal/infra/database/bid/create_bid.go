@@ -21,13 +21,13 @@ type BidRepository struct {
 }
 
 
-func (bd *BidRepository) CreateBid( ctx context.Context, bidList []model.Bid)(*internal_error.InternalError) {
+func (bd *BidRepository) CreateBid( ctx context.Context, bidList []model.BidInputDTO)(*internal_error.InternalError) {
 	var wg sync.WaitGroup
 
 	for _, bid := range bidList {
 		wg.Add(1)
 
-		go func (bidValue model.Bid) {
+		go func (bidValue model.BidInputDTO) {
 			defer wg.Done()
 			auction, err := bd.AuctionRepository.FindAuctionById(ctx, bidValue.AuctionID)
 			if err != nil {

@@ -24,7 +24,7 @@ func NewUserRepository( database *mongo.Database) *UserRepository {
 	}
 }
 
-func (ur *UserRepository) FindUserById(ctx context.Context,  userId string) (*model.User, *internal_error.InternalError) {
+func (ur *UserRepository) FindUserById(ctx context.Context,  userId string) (*model.UserOutputDTO, *internal_error.InternalError) {
 	
 	filter := bson.M{"_id": userId}
 	var userEntityMongo entity.UserEntityMongo
@@ -39,7 +39,7 @@ func (ur *UserRepository) FindUserById(ctx context.Context,  userId string) (*mo
 		return nil, internal_error.NewInternalServerError("Error trying to find user by userID")	
 	}
 
-	modelUser := &model.User{
+	modelUser := &model.UserOutputDTO{
 		Id: userEntityMongo.Id,
 		Name: userEntityMongo.Name,
 	}

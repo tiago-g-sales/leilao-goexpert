@@ -13,7 +13,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-func (bd *BidRepository) FindBidByAuctionId(ctx context.Context, auctionId string)([]model.Bid, *internal_error.InternalError){
+func (bd *BidRepository) FindBidByAuctionId(ctx context.Context, auctionId string)([]model.BidOutputDTO, *internal_error.InternalError){
 
 	filter := bson.M{"auctionID": auctionId}
 
@@ -29,9 +29,9 @@ func (bd *BidRepository) FindBidByAuctionId(ctx context.Context, auctionId strin
 		return nil, internal_error.NewInternalServerError(fmt.Sprintf("Error trying to find bids by auctionID %s", auctionId))
 	}
 
-	var bidList []model.Bid
+	var bidList []model.BidOutputDTO
 	for _, bid := range entities_bid {
-		bidList = append(bidList, model.Bid{
+		bidList = append(bidList, model.BidOutputDTO{
 			Id: bid.Id,
 			UserID: bid.UserID,
 			AuctionID: bid.AuctionID,
@@ -45,7 +45,7 @@ func (bd *BidRepository) FindBidByAuctionId(ctx context.Context, auctionId strin
 
 }
 
-func (bd *BidRepository) FindWinningBidByAuctionId(ctx context.Context, auctionId string)(*model.Bid, *internal_error.InternalError){
+func (bd *BidRepository) FindWinningBidByAuctionId(ctx context.Context, auctionId string)(*model.BidOutputDTO, *internal_error.InternalError){
 
 	filter := bson.M{"auctionID": auctionId}
 	var bid bid_entity.BidEntityMongo
@@ -55,7 +55,7 @@ func (bd *BidRepository) FindWinningBidByAuctionId(ctx context.Context, auctionI
 		logger.Error("Error trying to find the auction winner", err)
 		return nil, internal_error.NewInternalServerError("Error trying to find the auction winner")	
 	}
-	return &model.Bid{
+	return &model.BidOutputDTO{
 		Id: bid.Id,
 		UserID: bid.UserID,
 		AuctionID: bid.AuctionID,

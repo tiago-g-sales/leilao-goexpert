@@ -1,7 +1,8 @@
 package model
 
-type User struct {
-	Id 	 	string
-	Name 	string
+
+
+type UserOutputDTO struct {	
+	Id 		string 			`json:"id"`
+	Name 	string 			`json:"name"`	
 }
- 
