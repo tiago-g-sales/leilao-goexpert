@@ -8,7 +8,7 @@ import (
 
 type WinningInfoOutputDTO struct {
 	Auction 		AuctionOutputDTO `json:"auction"`
-	Bid				*BidOutputDTO 	 `json:"bid, omitempty"`  
+	Bid				*BidOutputDTO 	 `json:"bid,omitempty"`  
 }
 
 
