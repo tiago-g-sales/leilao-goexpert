@@ -88,6 +88,8 @@ services:
       - OTEL_SERVICE_NAME=microservice-client
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
       - HTTP_PORT=:8080
+      - BATCH_INSERT_INTERVAL=7m
+      - MAX_BATCH_SIZE=10
     ports:
       - "8080:8080"
     depends_on:

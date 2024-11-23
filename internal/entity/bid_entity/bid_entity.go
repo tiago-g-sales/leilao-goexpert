@@ -18,6 +18,9 @@ type BidEntityMongo struct {
 
 
 
+
+
+
 type BidRepositoryInterface interface {
 	CreateBid( ctx context.Context, bidList []model.BidInputDTO)(*internal_error.InternalError) 
 	FindBidByAuctionId(ctx context.Context, auctionId string)([]model.BidOutputDTO, *internal_error.InternalError)

@@ -21,7 +21,9 @@ func (r *RestErr) Error() string {
 }
 
 
-func NewBadRequestError(message string) *RestErr {
+
+
+func NewBadRequestError(message string, causes ...Causes) *RestErr {
 	return &RestErr{
 		Message: message,
 		Err: "bad_request",
