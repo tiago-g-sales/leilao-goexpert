@@ -26,16 +26,16 @@ func init() {
 	}
 }
 
-func ValidatEr(validator_err error) *rest_err.RestErr {
+func ValidateErr(validation_err error) *rest_err.RestErr {
 	var jsonErr *json.UnmarshalTypeError
 	var jsonValidator validator.ValidationErrors
 
-	if errors.As(validator_err, &jsonErr) {
+	if errors.As(validation_err, &jsonErr) {
 		return rest_err.NewNotFoundError("Invalid type error")
-	} else if errors.As(validator_err, &jsonValidator) {
+	} else if errors.As(validation_err, &jsonValidator) {
 		errorsCauses := []rest_err.Causes{}
 
-		for _, e := range validator_err.(validator.ValidationErrors) {
+		for _, e := range validation_err.(validator.ValidationErrors) {
 			errorsCauses = append(errorsCauses, rest_err.Causes{
 				Field:   e.Field(),
 				Message: e.Translate(transl),

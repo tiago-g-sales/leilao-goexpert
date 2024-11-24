@@ -9,12 +9,22 @@ import (
 
 	"time"
 
+	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/database/mongodb"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/opentelemetry"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/web/controller/auction_controller"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/web/controller/bid_controller"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/web/controller/user_controller"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/database/auction"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/database/bid"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/database/user"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/usecase/auction_usecase"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/usecase/bid_usecase"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/usecase/user_usecase"
+	"go.mongodb.org/mongo-driver/mongo"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/trace"
-
 )
 
 
@@ -74,11 +84,43 @@ func main() {
 
 	fmt.Println(templateData)
 
-	_ , err :=  mongodb.NewMongoDBConnection(ctx)
+	databaseConnection , err :=  mongodb.NewMongoDBConnection(ctx)
 	if err != nil {
 		log.Fatal(err.Error())
 		return
 	}
 
+	router := gin.Default()
 
+	userController, bidController, auctionsController := initDependencies(databaseConnection)
+
+
+	router.GET("/auctions", auctionsController.FindAuctions) 
+	router.GET("/auctions/:auctions", auctionsController.FindBidByAuctionId) 
+	router.POST("/auctions", auctionsController.CreateAuction) 
+	router.GET("/auctions/winner/:auctionId", auctionsController.FindWinningBidByAuctionId) 
+	router.POST("/bid", bidController.CreateBid) 
+	router.GET("/bid/:auctionId", bidController.FindBidByAuctionId) 
+	router.GET("/user/:userId", userController.FindUserById) 
+
+	router.Run(viper.GetString("HTTP_PORT"))
+
+
+}
+
+func initDependencies(database *mongo.Database) (
+	
+	userConstroller *user_controller.UserController,
+	bidConstroller *bid_controller.BidController,
+	auctionConstroller *auction_controller.AuctionController ) {
+
+	auctionRepository := auction.NewAuctionRepository(database)
+	bidRepository := bid.NewBidRepository(database, auctionRepository)
+	userRepository := user.NewUserRepository(database)
+
+	userConstroller = user_controller.NewUserController(user_usecase.NewUserUseCase(userRepository))
+	auctionConstroller = auction_controller.NewAuctionController(auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository))
+	bidConstroller = bid_controller.NewBidController(bid_usecase.NewBidUseCase(bidRepository))
+	
+	return
 }

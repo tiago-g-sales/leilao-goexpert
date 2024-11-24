@@ -1,13 +1,17 @@
 package rest_err
 
-import "net/http"
+import (
+	"net/http"
+
+	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
+)
 
 
 type RestErr struct {
 
 	Message 	string	 	`json:"message"`
 	Err 		string	 	`json:"err"`
-	Code 		int32		`json:"code"`
+	Code 		int			`json:"code"`
 	Causes 		[]Causes	`json:"causes"`
 }
 
@@ -20,6 +24,17 @@ func (r *RestErr) Error() string {
 	return r.Message
 }
 
+func ConvertError(internal_error *internal_error.InternalError) *RestErr {
+	switch internal_error.Err {
+		case "bad_request":
+			return NewBadRequestError(internal_error.Error())
+		case "not_found":
+			return NewNotFoundError(internal_error.Error())
+		default:
+			return NewInternalServerError(internal_error.Error())
+	}
+		
+}
 
 
 
@@ -28,7 +43,7 @@ func NewBadRequestError(message string, causes ...Causes) *RestErr {
 		Message: message,
 		Err: "bad_request",
 		Code: http.StatusBadRequest,
-		Causes: nil,
+		Causes: causes,
 	}
 }
 

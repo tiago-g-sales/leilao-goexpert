@@ -20,6 +20,14 @@ type BidRepository struct {
 	
 }
 
+func NewBidRepository(database *mongo.Database, auctionRepository *auction.AuctionRepository) *BidRepository {
+	return &BidRepository{
+		Collection: database.Collection("bids"),
+		AuctionRepository: auctionRepository,
+	}
+}
+
+
 
 func (bd *BidRepository) CreateBid( ctx context.Context, bidList []model.BidInputDTO)(*internal_error.InternalError) {
 	var wg sync.WaitGroup

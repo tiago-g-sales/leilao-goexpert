@@ -7,7 +7,7 @@ import (
 
 	"github.com/spf13/viper"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/logger"
-	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/database/bid"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/entity/bid_entity"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/model"
 )
@@ -15,7 +15,7 @@ import (
 
 type BidUseCase struct {
 
-	BidRepository  bid.BidRepository
+	BidRepository  bid_entity.BidRepositoryInterface
 	timer *time.Timer
 	maxBatchSize int 
 	batchInsertInterval time.Duration 
@@ -29,7 +29,7 @@ type BidUseCaseInterface interface {
 	FindBidByAuctionId(ctx  context.Context, auctionId string) ([]model.BidOutputDTO, *internal_error.InternalError)
 }
 
-func NewBidUseCase(bidRepository  bid.BidRepository ) BidUseCaseInterface{
+func NewBidUseCase(bidRepository  bid_entity.BidRepositoryInterface ) BidUseCaseInterface{
 	
 	maxSizeInterval := getMaxBatchSizeInterval()
 	maxBatchSize := getMaxBatchSize()	

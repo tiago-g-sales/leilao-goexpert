@@ -12,6 +12,13 @@ type UserUseCase struct {
 	UserRepository entity.UserRepositoryInterface
 }
 
+func NewUserUseCase(userRepository entity.UserRepositoryInterface) UserUseCaseInterface {
+	return &UserUseCase{
+		UserRepository: userRepository,
+	}
+}
+
+
 type UserUseCaseInterface interface {
 	
 	FindUserById(ctx context.Context, userId string) (*model.UserOutputDTO, *internal_error.InternalError)
