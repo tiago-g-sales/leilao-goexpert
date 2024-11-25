@@ -9,7 +9,8 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
-
+    volumes:
+      - mongo-data:/data/db
 
   mongo-express:
     image: mongo-express
@@ -82,7 +83,7 @@ services:
       - CONTENT=This is a demo of a microservice
       - EXTERNAL_CALL_URL=http://weather-otel-server:8181
       - EXTERNAL_CALL_METHOD=GET
-      - MONGODB_URL=mongodb://localhost:27017
+      - MONGODB_URL=mongodb://root:example@localhost:27017
       - MONGODB_DB=auctions
       - REQUEST_NAME_OTEL=microservice-client-request
       - OTEL_SERVICE_NAME=microservice-client
