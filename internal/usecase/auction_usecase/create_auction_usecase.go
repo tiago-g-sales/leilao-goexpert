@@ -2,7 +2,9 @@ package auction_usecase
 
 import (
 	"context"
+	"time"
 
+	"github.com/google/uuid"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/entity/auction_entity"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/entity/bid_entity"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/internal_error"
@@ -33,6 +35,10 @@ func NewAuctionUseCase(auctionRepositoryInterface auction_entity.AuctionReposito
 
 
 func (au *AuctionUseCase) CreateAuction(ctx context.Context, auction model.AuctionInputDTO) (*internal_error.InternalError) {
+
+	auction.Id = uuid.New().String()
+	auction.Status = model.Active
+	auction.Timestamp = time.Now()
 
 	err := au.auctionRepositoryInterface.CreateAuction(ctx, auction)
 	if err != nil {

@@ -14,9 +14,9 @@ type WinningInfoOutputDTO struct {
 
 type AuctionInputDTO struct {
 	Id 	 			string 				
-	ProductName 	string				`json:"productName" binding:"required, min=1"`					
-	Category 		string				`json:"category" binding:"required, min=2"`
-	Description 	string				`json:"description" binding:"required, min=10, max=200"`
+	ProductName 	string				`json:"productName" binding:"required,min=1"`					
+	Category 		string				`json:"category" binding:"required,min=2"`
+	Description 	string				`json:"description" binding:"required,min=10,max=200"`
 	Condition 		ProductCondition	`json:"condition"`
 	Status 			AuctionStatus		
 	Timestamp 		time.Time		

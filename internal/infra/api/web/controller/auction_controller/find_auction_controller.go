@@ -50,6 +50,13 @@ func (au *AuctionController) FindAuctions(c *gin.Context){
 		c.JSON(errRest.Code, errRest)
 		return
 	}
+
+	if len(auctions) == 0 {
+		errRest := rest_err.NewNotFoundError("Auctions not found") 
+		c.JSON(errRest.Code, errRest)
+		return	
+	}
+
 	c.JSON(http.StatusOK, auctions)
 
 }

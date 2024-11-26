@@ -26,8 +26,9 @@ func NewUserRepository( database *mongo.Database) *UserRepository {
 
 func (ur *UserRepository) FindUserById(ctx context.Context,  userId string) (*model.UserOutputDTO, *internal_error.InternalError) {
 	
-	filter := bson.M{"_id": userId}
+	filter := bson.M{"_id": userId}	
 	var userEntityMongo entity.UserEntityMongo
+
 	err := ur.Collection.FindOne(ctx, filter).Decode(&userEntityMongo)
 	if err != nil {
 		if errors.Is(err, mongo.ErrNoDocuments) {	
