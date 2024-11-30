@@ -10,7 +10,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: example
     volumes:
-      - mongo-data:/data/db
+      - ./.database:/data/db
 
   mongo-express:
     image: mongo-express
@@ -19,7 +19,7 @@ services:
       - 8081:8081
     environment:
       ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example  
       ME_CONFIG_MONGODB_URL: mongodb://root:example@mongo:27017/
       ME_CONFIG_BASICAUTH: "false"
     
@@ -79,18 +79,19 @@ services:
     build:
       context: .
     environment:
-      - TITLE=Microservice Demo
-      - CONTENT=This is a demo of a microservice
+      - TITLE=Sistema de leião
+      - CONTENT=Esse e um Sistema para cadastro de leilão e produtos para serem ofertados
       - EXTERNAL_CALL_URL=http://weather-otel-server:8181
       - EXTERNAL_CALL_METHOD=GET
-      - MONGODB_URL=mongodb://root:example@localhost:27017
+      - MONGODB_URL=mongodb://root:example@mongo:27017
       - MONGODB_DB=auctions
-      - REQUEST_NAME_OTEL=microservice-client-request
-      - OTEL_SERVICE_NAME=microservice-client
+      - REQUEST_NAME_OTEL=leilao-request
+      - OTEL_SERVICE_NAME=leilao-service
       - OTEL_EXPORTER_OTLP_ENDPOINT=otel-collector:4317
       - HTTP_PORT=:8080
-      - BATCH_INSERT_INTERVAL=7m
-      - MAX_BATCH_SIZE=10
+      - BATCH_INSERT_INTERVAL=1m
+      - MAX_BATCH_SIZE=1
+      - AUCTION_END_TIME:1m
     ports:
       - "8080:8080"
     depends_on:
@@ -98,6 +99,10 @@ services:
       - zipkin-all-in-one
       - prometheus
       - otel-collector
+      - mongo
+      - mongo-express
 
   
-
+volumes:
+  mongo-data:
+    driver: local

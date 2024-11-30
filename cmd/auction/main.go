@@ -94,6 +94,7 @@ func main() {
 
 	userController, bidController, auctionsController := initDependencies(databaseConnection)
 
+	go auctionsController.FindAuctionsEnd()
 
 	router.GET("/auctions", auctionsController.FindAuctions) 
 	router.GET("/auctions/:auctionId", auctionsController.FindBidByAuctionId) 
@@ -124,3 +125,4 @@ func initDependencies(database *mongo.Database) (
 	
 	return
 }
+

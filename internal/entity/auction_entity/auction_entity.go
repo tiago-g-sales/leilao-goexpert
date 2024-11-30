@@ -23,4 +23,5 @@ type AuctionRepositoryInterface interface {
 	CreateAuction(ctx context.Context, auction model.AuctionInputDTO) (*internal_error.InternalError)
 	FindAuctions( ctx context.Context, status model.AuctionStatus, category, productName string ) ([]model.AuctionOutputDTO, *internal_error.InternalError)
 	FindAuctionById(ctx context.Context,  auctionId string) (*model.AuctionOutputDTO, *internal_error.InternalError)
+	UpdateAuctionById(ctx context.Context, auction model.AuctionInputDTO) (*internal_error.InternalError)
 }

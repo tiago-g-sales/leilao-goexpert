@@ -41,7 +41,7 @@ func (ar *AuctionRepository) FindAuctions(
 	category, productName string ) ([]model.AuctionOutputDTO, *internal_error.InternalError){
 	
 		filter := bson.M{} 
-		if status != 0{
+		if status >= 0{
 			filter["status"] = status
 		}
 
