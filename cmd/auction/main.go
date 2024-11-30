@@ -13,6 +13,7 @@ import (
 	"github.com/spf13/viper"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/database/mongodb"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/opentelemetry"
+	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/service"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/web/controller/auction_controller"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/web/controller/bid_controller"
 	"github.com/tiago-g-sales/leilao-goexpert/internal/infra/api/web/controller/user_controller"
@@ -92,9 +93,9 @@ func main() {
 
 	router := gin.Default()
 
-	userController, bidController, auctionsController := initDependencies(databaseConnection)
+	userController, bidController, auctionsController, auctionService := initDependencies(databaseConnection)
 
-	go auctionsController.FindAuctionsEnd()
+	go auctionService.UpdateAuctionsToEnd()
 
 	router.GET("/auctions", auctionsController.FindAuctions) 
 	router.GET("/auctions/:auctionId", auctionsController.FindBidByAuctionId) 
@@ -113,7 +114,8 @@ func initDependencies(database *mongo.Database) (
 	
 	userConstroller *user_controller.UserController,
 	bidConstroller *bid_controller.BidController,
-	auctionConstroller *auction_controller.AuctionController ) {
+	auctionConstroller *auction_controller.AuctionController,
+	auctionService *service.AuctionService ) {
 
 	auctionRepository := auction.NewAuctionRepository(database)
 	bidRepository := bid.NewBidRepository(database, auctionRepository)
@@ -122,6 +124,7 @@ func initDependencies(database *mongo.Database) (
 	userConstroller = user_controller.NewUserController(user_usecase.NewUserUseCase(userRepository))
 	auctionConstroller = auction_controller.NewAuctionController(auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository))
 	bidConstroller = bid_controller.NewBidController(bid_usecase.NewBidUseCase(bidRepository))
+	auctionService = service.NewAuctionService(auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository))
 	
 	return
 }

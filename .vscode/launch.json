@@ -24,7 +24,7 @@
                 "OTEL": "false",
                 "BATCH_INSERT_INTERVAL":"1m",
                 "MAX_BATCH_SIZE":"1",
-                "AUCTION_END_TIME":"5m",
+                "AUCTION_END_TIME":"2m",
             },
             
         },
