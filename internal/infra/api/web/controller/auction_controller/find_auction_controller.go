@@ -20,7 +20,7 @@ func (au *AuctionController) FindBidByAuctionId(c *gin.Context) {
 	ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
 
 	ctx, spanInicial := au.TemplateData.OTELTracer.Start(ctx, REQUESTNAMEOTEL + " SPAN_INICIAL ")
-	spanInicial.End()
+
 
 	ctx, span := au.TemplateData.OTELTracer.Start(ctx, REQUESTNAMEOTEL + " Initial request FindBidByAuctionId")
 	defer span.End()
@@ -48,7 +48,7 @@ func (au *AuctionController) FindBidByAuctionId(c *gin.Context) {
 	defer spanEnd.End()
 
 	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(c.Request.Header))
-
+	spanInicial.End()
 	c.JSON(http.StatusOK, auctionData)
 }
 
