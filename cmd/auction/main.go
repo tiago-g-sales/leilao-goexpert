@@ -5,9 +5,6 @@ import (
 	"log"
 	"os"
 	"os/signal"
-
-	"time"
-
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/database/mongodb"
@@ -24,19 +21,9 @@ import (
 	"github.com/tiago-g-sales/leilao-goexpert/internal/usecase/user_usecase"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.opentelemetry.io/otel"
-	"go.opentelemetry.io/otel/trace"
 )
 
 
-type TemplateData struct {
-	Title              string
-	ResponseTime       time.Duration
-	ExternalCallMethod string
-	ExternalCallURL    string
-	Content            string
-	RequestNameOTEL    string
-	OTELTracer         trace.Tracer
-}
 
 
 
@@ -73,16 +60,9 @@ func main() {
 
 	tracer := otel.Tracer("microservice-tracer")
 
-	templateData := &TemplateData{
-		Title:              viper.GetString("TITLE"),
-		ResponseTime:       time.Duration(viper.GetInt("RESPONSE_TIME")),
-		ExternalCallURL:    viper.GetString("EXTERNAL_CALL_URL"),
-		ExternalCallMethod: viper.GetString("EXTERNAL_CALL_METHOD"),
-		RequestNameOTEL:    viper.GetString("REQUEST_NAME_OTEL"),
-		OTELTracer:         tracer,
-	}
-	//TODO: Remove this line
-	templateData.ExternalCallMethod = "GET"
+	templateData := opentelemetry.NewTemplateData(
+		tracer,
+	)
 
 	databaseConnection , err :=  mongodb.NewMongoDBConnection(ctx)
 	if err != nil {
@@ -92,7 +72,7 @@ func main() {
 
 	router := gin.Default()
 
-	userController, bidController, auctionsController, auctionService := initDependencies(databaseConnection)
+	userController, bidController, auctionsController, auctionService := initDependencies(databaseConnection, templateData )
 
 	go auctionService.UpdateAuctionsToEnd()
 
@@ -103,26 +83,25 @@ func main() {
 	router.POST("/bid", bidController.CreateBid) 
 	router.GET("/bid/:auctionId", bidController.FindBidByAuctionId) 
 	router.GET("/user/:userId", userController.FindUserById) 
-
 	router.Run(viper.GetString("HTTP_PORT"))
 
 
 }
 
-func initDependencies(database *mongo.Database) (
-	
+func initDependencies( database *mongo.Database, templateData *opentelemetry.TemplateData ) (
 	userConstroller *user_controller.UserController,
 	bidConstroller *bid_controller.BidController,
 	auctionConstroller *auction_controller.AuctionController,
 	auctionService *service.AuctionService ) {
 
+
 	auctionRepository := auction.NewAuctionRepository(database)
 	bidRepository := bid.NewBidRepository(database, auctionRepository)
 	userRepository := user.NewUserRepository(database)
 
-	userConstroller = user_controller.NewUserController(user_usecase.NewUserUseCase(userRepository))
-	auctionConstroller = auction_controller.NewAuctionController(auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository))
-	bidConstroller = bid_controller.NewBidController(bid_usecase.NewBidUseCase(bidRepository))
+	userConstroller = user_controller.NewUserController(user_usecase.NewUserUseCase(userRepository), templateData)
+	auctionConstroller = auction_controller.NewAuctionController(auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository), templateData)
+	bidConstroller = bid_controller.NewBidController(bid_usecase.NewBidUseCase(bidRepository), templateData)
 	auctionService = service.NewAuctionService(auction_usecase.NewAuctionUseCase(auctionRepository, bidRepository))
 	
 	return

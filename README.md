@@ -65,7 +65,7 @@ cd leilao-goexpert
 ### Portas
 HTTP server on port :8080 <br />
 
-### Efetur o cadastro do usuario 
+### Efetuar o cadastro do usuario 
     - Execuatar o mongo express via navegador (passo 5 desse readme) e criar a collection users e criar o New Document conforme o json abaixo:
     {
       "_id":"8a19e094-3e10-42ee-94af-85ad31c0cb40",
@@ -90,7 +90,7 @@ HTTP server on port :8080 <br />
     --data '{
             
         "productName":  "Product Computer",
-        "category": "Informatic",
+        "category": "Computer",
         "description": "Auction computer",
         "condition": 1
     }'

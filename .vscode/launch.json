@@ -21,7 +21,7 @@
                 "OTEL_SERVICE_NAME": "leilao-otel-service", 
                 "OTEL_EXPORTER_OTLP_ENDPOINT": "otel-collector:4317",
                 "HTTP_PORT": ":8080",
-                "OTEL": "false",
+                "OTEL": "true",
                 "BATCH_INSERT_INTERVAL":"1m",
                 "MAX_BATCH_SIZE":"1",
                 "AUCTION_END_TIME":"2m",

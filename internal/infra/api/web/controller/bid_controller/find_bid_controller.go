@@ -7,10 +7,24 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/tiago-g-sales/leilao-goexpert/configuration/rest_err"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 
 func (u *BidController) FindBidByAuctionId(c *gin.Context) {
+
+	carrier := propagation.HeaderCarrier(c.Request.Header)
+	ctx := c.Request.Context()
+	ctx = otel.GetTextMapPropagator().Extract(ctx, carrier)
+
+	ctx, spanInicial := u.TemplateData.OTELTracer.Start(ctx, REQUESTNAMEOTEL + " SPAN_INICIAL")
+	spanInicial.End()
+
+	ctx, span := u.TemplateData.OTELTracer.Start(ctx, REQUESTNAMEOTEL + " Initial request FindBidByAuctionId")
+	defer span.End()
+	
+
 
 	auctionId := c.Param("auctionId")
 	if err :=  uuid.Validate(auctionId); err != nil {
@@ -28,5 +42,12 @@ func (u *BidController) FindBidByAuctionId(c *gin.Context) {
 		c.JSON(errRest.Code, errRest)
 		return
 	}
+
+	ctx, spanEnd := u.TemplateData.OTELTracer.Start(ctx, REQUESTNAMEOTEL + " Finish request FindBidByAuctionId")
+	defer spanEnd.End()
+
+	otel.GetTextMapPropagator().Inject(ctx, propagation.HeaderCarrier(c.Request.Header))
+
+
 	c.JSON(http.StatusOK, bidOutputList)
 }

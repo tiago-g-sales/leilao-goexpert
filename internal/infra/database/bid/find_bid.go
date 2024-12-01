@@ -15,6 +15,7 @@ import (
 
 func (bd *BidRepository) FindBidByAuctionId(ctx context.Context, auctionId string)([]model.BidOutputDTO, *internal_error.InternalError){
 
+	
 	filter := bson.M{"auction_id": auctionId}
 
 	cursor, err := bd.Collection.Find(ctx, filter)
