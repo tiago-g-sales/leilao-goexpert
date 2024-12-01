@@ -5,6 +5,12 @@ Sistema Leilão
 
 Aplicação em Go sendo: 
   - Servidor HTTP Rest Server
+  - Servidor Zipkin para apresentação do trace distribuído
+  - Servidor Jaeger para apresentação do trace distribuído
+  - Servidor Prometheus
+  - Servidor Opentelemetry
+  - Servidor Grafana
+
 
 &nbsp;
 - **Aplicação em Container com - Docker-compose e Dockerfile**
@@ -143,3 +149,23 @@ HTTP server on port :8080 <br />
 
   - http://localhost:8081/
 
+&nbsp;
+6. **Acessar o Zipkin para consulta do trace distribuído:**
+
+  - http://localhost:9411/
+
+&nbsp;
+7. **Acessar o Jaeger para consulta do trace distribuído:**
+
+  - http://localhost:16686/ 
+
+&nbsp;
+8. **Acessar o Grafana para consulta do trace distribuído:**
+
+  - http://localhost:3001/
+
+&nbsp;
+9. **Acessar o Prometheus para consulta do trace distribuído:**
+
+  - http://localhost:9090/
+  
