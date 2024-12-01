@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"os"
 	"os/signal"
@@ -82,8 +81,8 @@ func main() {
 		RequestNameOTEL:    viper.GetString("REQUEST_NAME_OTEL"),
 		OTELTracer:         tracer,
 	}
-
-	fmt.Println(templateData)
+	//TODO: Remove this line
+	templateData.ExternalCallMethod = "GET"
 
 	databaseConnection , err :=  mongodb.NewMongoDBConnection(ctx)
 	if err != nil {

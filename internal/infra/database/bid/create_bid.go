@@ -43,6 +43,7 @@ func (bd *BidRepository) CreateBid( ctx context.Context, bidList []model.BidInpu
 				return 
 			}
 			if auction.Status != model.Active {
+				logger.Error("Error trying to auction id is not active ", err)
 				return
 			}
 			
