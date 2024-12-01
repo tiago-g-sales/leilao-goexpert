@@ -61,10 +61,11 @@ cd leilao-goexpert
 ```bash 
  docker-compose up
 ```
-
 &nbsp;
 
-
+### Como validar encerramento do Leilão automatica:
+ - Avaliar tempo definido no Docker Compose Default: AUCTION_END_TIME:1m
+ - Avaliar log no console onde é aprentado as informações de abertura e encerramento do leilão. 
 
 ## Como testar localmente:
 
@@ -142,7 +143,6 @@ HTTP server on port :8080 <br />
     curl --request GET \
     --url http://localhost:8080/auctions/winner/{auctionID} \
     --header 'User-Agent: insomnia/10.0.0'
-
 
 &nbsp;
 5. **Acessar o MongoDB Express para consulta dos dados no banco de dados:**
